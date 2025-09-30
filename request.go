@@ -42,9 +42,9 @@ type BaseBotClient struct {
 }
 
 type RequestMessage struct {
-	method string
-	v      *map[string]string
-	data   *map[string]FileReader
+	Method string
+	Values *map[string]string
+	Data   *map[string]FileReader
 }
 
 type Response struct {
@@ -137,7 +137,7 @@ func (bot *Bot) PostRequestMessage(requestMessage *RequestMessage, reqOpts *Requ
 }
 
 func (bot *Bot) PostRequestMessageWithContext(requestMessage *RequestMessage, reqOpts *RequestOpts) (*Message, error) {
-	r, err := bot.RequestWithContext(context.Background(), requestMessage.method, *requestMessage.v, *requestMessage.data, reqOpts)
+	r, err := bot.RequestWithContext(context.Background(), requestMessage.Method, *requestMessage.Values, *requestMessage.Data, reqOpts)
 	if err != nil {
 		return nil, err
 	}

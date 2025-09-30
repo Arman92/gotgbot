@@ -130,9 +130,9 @@ func generateMethodDef(d APIDescription, tgMethod MethodDescription) (string, er
 		method.WriteString(valueGen)
 		method.WriteString("\n")
 		if hasData {
-			method.WriteString("\nreturn &RequestMessage{method: \"" + tgMethod.Name + "\", v: &v, data: &data}, nil")
+			method.WriteString("\nreturn &RequestMessage{Method: \"" + tgMethod.Name + "\", Values: &v, Data: &data}, nil")
 		} else {
-			method.WriteString("\nreturn &RequestMessage{method: \"" + tgMethod.Name + "\", v: &v }, nil")
+			method.WriteString("\nreturn &RequestMessage{Method: \"" + tgMethod.Name + "\", Values: &v}, nil")
 		}
 		method.WriteString("\n}")
 

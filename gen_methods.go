@@ -4514,7 +4514,7 @@ func (bot *Bot) NewSendAnimation(chatId int64, animation InputFileOrString, opts
 		}
 	}
 
-	return &RequestMessage{method: "sendAnimation", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendAnimation", Values: &v, Data: &data}, nil
 }
 
 // SendAudioOpts is the set of optional fields for Bot.SendAudio and Bot.SendAudioWithContext.
@@ -4724,7 +4724,7 @@ func (bot *Bot) NewSendAudio(chatId int64, audio InputFileOrString, opts *SendAu
 		}
 	}
 
-	return &RequestMessage{method: "sendAudio", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendAudio", Values: &v, Data: &data}, nil
 }
 
 // SendChatActionOpts is the set of optional fields for Bot.SendChatAction and Bot.SendChatActionWithContext.
@@ -5225,7 +5225,7 @@ func (bot *Bot) NewSendDocument(chatId int64, document InputFileOrString, opts *
 		}
 	}
 
-	return &RequestMessage{method: "sendDocument", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendDocument", Values: &v, Data: &data}, nil
 }
 
 // SendGameOpts is the set of optional fields for Bot.SendGame and Bot.SendGameWithContext.
@@ -5772,7 +5772,7 @@ func (bot *Bot) NewSendMediaGroup(chatId int64, media []InputMedia, opts *SendMe
 		}
 	}
 
-	return &RequestMessage{method: "sendMediaGroup", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendMediaGroup", Values: &v, Data: &data}, nil
 }
 
 // SendMessageOpts is the set of optional fields for Bot.SendMessage and Bot.SendMessageWithContext.
@@ -5946,7 +5946,7 @@ func (bot *Bot) NewSendMessage(chatId int64, text string, opts *SendMessageOpts)
 		}
 	}
 
-	return &RequestMessage{method: "sendMessage", v: &v}, nil
+	return &RequestMessage{Method: "sendMessage", Values: &v}, nil
 }
 
 // SendPaidMediaOpts is the set of optional fields for Bot.SendPaidMedia and Bot.SendPaidMediaWithContext.
@@ -6255,7 +6255,7 @@ func (bot *Bot) NewSendPhoto(chatId int64, photo InputFileOrString, opts *SendPh
 		}
 	}
 
-	return &RequestMessage{method: "sendPhoto", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendPhoto", Values: &v, Data: &data}, nil
 }
 
 // SendPollOpts is the set of optional fields for Bot.SendPoll and Bot.SendPollWithContext.
@@ -6550,7 +6550,7 @@ func (bot *Bot) NewSendSticker(chatId int64, sticker InputFileOrString, opts *Se
 		}
 	}
 
-	return &RequestMessage{method: "sendSticker", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendSticker", Values: &v, Data: &data}, nil
 }
 
 // SendVenueOpts is the set of optional fields for Bot.SendVenue and Bot.SendVenueWithContext.
@@ -6910,7 +6910,7 @@ func (bot *Bot) NewSendVideo(chatId int64, video InputFileOrString, opts *SendVi
 		}
 	}
 
-	return &RequestMessage{method: "sendVideo", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendVideo", Values: &v, Data: &data}, nil
 }
 
 // SendVideoNoteOpts is the set of optional fields for Bot.SendVideoNote and Bot.SendVideoNoteWithContext.
@@ -7094,7 +7094,7 @@ func (bot *Bot) NewSendVideoNote(chatId int64, videoNote InputFileOrString, opts
 		}
 	}
 
-	return &RequestMessage{method: "sendVideoNote", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendVideoNote", Values: &v, Data: &data}, nil
 }
 
 // SendVoiceOpts is the set of optional fields for Bot.SendVoice and Bot.SendVoiceWithContext.
@@ -7278,7 +7278,7 @@ func (bot *Bot) NewSendVoice(chatId int64, voice InputFileOrString, opts *SendVo
 		}
 	}
 
-	return &RequestMessage{method: "sendVoice", v: &v, data: &data}, nil
+	return &RequestMessage{Method: "sendVoice", Values: &v, Data: &data}, nil
 }
 
 // SetBusinessAccountBioOpts is the set of optional fields for Bot.SetBusinessAccountBio and Bot.SetBusinessAccountBioWithContext.
