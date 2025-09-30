@@ -4441,7 +4441,7 @@ func (bot *Bot) SendAnimationWithContext(ctx context.Context, chatId int64, anim
 //   - chatId (type int64): Unique identifier for the target chat
 //   - animation (type InputFileOrString): Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendAnimationOpts): All optional parameters.
-func (bot *Bot) NewSendAnimation(chatId int64, animation InputFileOrString, opts *SendAnimationOpts) (*RequestMessage, error) {
+func NewSendAnimation(chatId int64, animation InputFileOrString, opts *SendAnimationOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -4657,7 +4657,7 @@ func (bot *Bot) SendAudioWithContext(ctx context.Context, chatId int64, audio In
 //   - chatId (type int64): Unique identifier for the target chat
 //   - audio (type InputFileOrString): Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendAudioOpts): All optional parameters.
-func (bot *Bot) NewSendAudio(chatId int64, audio InputFileOrString, opts *SendAudioOpts) (*RequestMessage, error) {
+func NewSendAudio(chatId int64, audio InputFileOrString, opts *SendAudioOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -5162,7 +5162,7 @@ func (bot *Bot) SendDocumentWithContext(ctx context.Context, chatId int64, docum
 //   - chatId (type int64): Unique identifier for the target chat
 //   - document (type InputFileOrString): File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendDocumentOpts): All optional parameters.
-func (bot *Bot) NewSendDocument(chatId int64, document InputFileOrString, opts *SendDocumentOpts) (*RequestMessage, error) {
+func NewSendDocument(chatId int64, document InputFileOrString, opts *SendDocumentOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -5732,7 +5732,7 @@ func (bot *Bot) SendMediaGroupWithContext(ctx context.Context, chatId int64, med
 //   - chatId (type int64): Unique identifier for the target chat
 //   - media (type []InputMedia): A JSON-serialized array describing messages to be sent, must include 2-10 items
 //   - opts (type SendMediaGroupOpts): All optional parameters.
-func (bot *Bot) NewSendMediaGroup(chatId int64, media []InputMedia, opts *SendMediaGroupOpts) (*RequestMessage, error) {
+func NewSendMediaGroup(chatId int64, media []InputMedia, opts *SendMediaGroupOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -5892,7 +5892,7 @@ func (bot *Bot) SendMessageWithContext(ctx context.Context, chatId int64, text s
 //   - chatId (type int64): Unique identifier for the target chat
 //   - text (type string): Text of the message to be sent, 1-4096 characters after entities parsing
 //   - opts (type SendMessageOpts): All optional parameters.
-func (bot *Bot) NewSendMessage(chatId int64, text string, opts *SendMessageOpts) (*RequestMessage, error) {
+func NewSendMessage(chatId int64, text string, opts *SendMessageOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
 	v["text"] = text
@@ -6198,7 +6198,7 @@ func (bot *Bot) SendPhotoWithContext(ctx context.Context, chatId int64, photo In
 //   - chatId (type int64): Unique identifier for the target chat
 //   - photo (type InputFileOrString): Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendPhotoOpts): All optional parameters.
-func (bot *Bot) NewSendPhoto(chatId int64, photo InputFileOrString, opts *SendPhotoOpts) (*RequestMessage, error) {
+func NewSendPhoto(chatId int64, photo InputFileOrString, opts *SendPhotoOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -6503,7 +6503,7 @@ func (bot *Bot) SendStickerWithContext(ctx context.Context, chatId int64, sticke
 //   - chatId (type int64): Unique identifier for the target chat
 //   - sticker (type InputFileOrString): Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files. Video and animated stickers can't be sent via an HTTP URL.
 //   - opts (type SendStickerOpts): All optional parameters.
-func (bot *Bot) NewSendSticker(chatId int64, sticker InputFileOrString, opts *SendStickerOpts) (*RequestMessage, error) {
+func NewSendSticker(chatId int64, sticker InputFileOrString, opts *SendStickerOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -6826,7 +6826,7 @@ func (bot *Bot) SendVideoWithContext(ctx context.Context, chatId int64, video In
 //   - chatId (type int64): Unique identifier for the target chat
 //   - video (type InputFileOrString): Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendVideoOpts): All optional parameters.
-func (bot *Bot) NewSendVideo(chatId int64, video InputFileOrString, opts *SendVideoOpts) (*RequestMessage, error) {
+func NewSendVideo(chatId int64, video InputFileOrString, opts *SendVideoOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -7035,7 +7035,7 @@ func (bot *Bot) SendVideoNoteWithContext(ctx context.Context, chatId int64, vide
 //   - chatId (type int64): Unique identifier for the target chat
 //   - videoNote (type InputFileOrString): Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files. Sending video notes by a URL is currently unsupported
 //   - opts (type SendVideoNoteOpts): All optional parameters.
-func (bot *Bot) NewSendVideoNote(chatId int64, videoNote InputFileOrString, opts *SendVideoNoteOpts) (*RequestMessage, error) {
+func NewSendVideoNote(chatId int64, videoNote InputFileOrString, opts *SendVideoNoteOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)
@@ -7220,7 +7220,7 @@ func (bot *Bot) SendVoiceWithContext(ctx context.Context, chatId int64, voice In
 //   - chatId (type int64): Unique identifier for the target chat
 //   - voice (type InputFileOrString): Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
 //   - opts (type SendVoiceOpts): All optional parameters.
-func (bot *Bot) NewSendVoice(chatId int64, voice InputFileOrString, opts *SendVoiceOpts) (*RequestMessage, error) {
+func NewSendVoice(chatId int64, voice InputFileOrString, opts *SendVoiceOpts) (*RequestMessage, error) {
 	v := map[string]string{}
 	data := map[string]FileReader{}
 	v["chat_id"] = strconv.FormatInt(chatId, 10)

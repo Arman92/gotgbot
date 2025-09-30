@@ -125,7 +125,7 @@ func generateMethodDef(d APIDescription, tgMethod MethodDescription) (string, er
 
 	if contains(tgMethod.Name, specialMethods) {
 		method.WriteString(desc)
-		method.WriteString("\nfunc (bot *Bot) New" + strings.Title(tgMethod.Name) + "(" + joinedArgs + ") (*RequestMessage, error) {")
+		method.WriteString("\nfunc New" + strings.Title(tgMethod.Name) + "(" + joinedArgs + ") (*RequestMessage, error) {")
 		method.WriteString("\n	v := map[string]string{}")
 		method.WriteString(valueGen)
 		method.WriteString("\n")
