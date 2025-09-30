@@ -41,6 +41,12 @@ type BaseBotClient struct {
 	DefaultRequestOpts *RequestOpts
 }
 
+type RequestMessage struct {
+	method string
+	v      *map[string]string
+	data   *map[string]FileReader
+}
+
 type Response struct {
 	// Ok: if true, request was successful, and result can be found in the Result field.
 	// If false, error can be explained in the Description.
@@ -122,6 +128,22 @@ func timeoutFromOpts(parentCtx context.Context, opts *RequestOpts) (context.Cont
 	}
 	// 0 == nothing defined, use defaults.
 	return nil, nil
+}
+
+// PostRequestMessage allows sending a prepared RequestMessage to the telegram bot API.
+// Use this to send text, audio, documents, photos, etc when you have prepared a RequestMessage by calling NewSendMessage, NewSendAudio, etc.
+func (bot *Bot) PostRequestMessage(requestMessage *RequestMessage, reqOpts *RequestOpts) (*Message, error) {
+	return bot.PostRequestMessageWithContext(requestMessage, reqOpts)
+}
+
+func (bot *Bot) PostRequestMessageWithContext(requestMessage *RequestMessage, reqOpts *RequestOpts) (*Message, error) {
+	r, err := bot.RequestWithContext(context.Background(), requestMessage.method, *requestMessage.v, *requestMessage.data, reqOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	var m Message
+	return &m, json.Unmarshal(r, &m)
 }
 
 // RequestWithContext allows sending a POST request to the telegram bot API with an existing context.

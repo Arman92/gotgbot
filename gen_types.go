@@ -2705,7 +2705,7 @@ type DirectMessagePriceChanged struct {
 //
 // Describes a topic of a direct messages chat.
 type DirectMessagesTopic struct {
-	// Unique identifier of the topic
+	// Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
 	TopicId int64 `json:"topic_id"`
 	// Optional. Information about the user that created the topic. Currently, it is always present
 	User *User `json:"user,omitempty"`
@@ -9686,7 +9686,7 @@ type SuggestedPostParameters struct {
 
 // SuggestedPostPrice (https://core.telegram.org/bots/api#suggestedpostprice)
 //
-// Desribes price of a suggested post.
+// Describes the price of a suggested post.
 type SuggestedPostPrice struct {
 	// Currency in which the post will be paid. Currently, must be one of "XTR" for Telegram Stars or "TON" for toncoins
 	Currency string `json:"currency"`

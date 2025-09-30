@@ -121,6 +121,23 @@ func generateMethodDef(d APIDescription, tgMethod MethodDescription) (string, er
 	method.WriteString(returnGen)
 	method.WriteString("\n}")
 
+	specialMethods := []string{"sendMessage", "sendPhoto", "sendAudio", "sendDocument", "sendVideo", "sendVoice", "sendVideoNote", "sendSticker", "sendMediaGroup", "sendAnimation"}
+
+	if contains(tgMethod.Name, specialMethods) {
+		method.WriteString(desc)
+		method.WriteString("\nfunc (bot *Bot) New" + strings.Title(tgMethod.Name) + "(" + joinedArgs + ") (*RequestMessage, error) {")
+		method.WriteString("\n	v := map[string]string{}")
+		method.WriteString(valueGen)
+		method.WriteString("\n")
+		if hasData {
+			method.WriteString("\nreturn &RequestMessage{method: \"" + tgMethod.Name + "\", v: &v, data: &data}, nil")
+		} else {
+			method.WriteString("\nreturn &RequestMessage{method: \"" + tgMethod.Name + "\", v: &v }, nil")
+		}
+		method.WriteString("\n}")
+
+	}
+
 	return method.String(), nil
 }
 

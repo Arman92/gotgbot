@@ -4435,6 +4435,88 @@ func (bot *Bot) SendAnimationWithContext(ctx context.Context, chatId int64, anim
 	return &m, json.Unmarshal(r, &m)
 }
 
+// SendAnimation (https://core.telegram.org/bots/api#sendanimation)
+//
+// Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent Message is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - animation (type InputFileOrString): Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendAnimationOpts): All optional parameters.
+func (bot *Bot) NewSendAnimation(chatId int64, animation InputFileOrString, opts *SendAnimationOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if animation != nil {
+		err := animation.Attach("animation", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'animation' input file: %w", err)
+		}
+		v["animation"] = animation.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		if opts.Duration != 0 {
+			v["duration"] = strconv.FormatInt(opts.Duration, 10)
+		}
+		if opts.Width != 0 {
+			v["width"] = strconv.FormatInt(opts.Width, 10)
+		}
+		if opts.Height != 0 {
+			v["height"] = strconv.FormatInt(opts.Height, 10)
+		}
+		if opts.Thumbnail != nil {
+			err := opts.Thumbnail.Attach("thumbnail", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'thumbnail' input file: %w", err)
+			}
+			v["thumbnail"] = opts.Thumbnail.getValue()
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		v["show_caption_above_media"] = strconv.FormatBool(opts.ShowCaptionAboveMedia)
+		v["has_spoiler"] = strconv.FormatBool(opts.HasSpoiler)
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendAnimation", v: &v, data: &data}, nil
+}
+
 // SendAudioOpts is the set of optional fields for Bot.SendAudio and Bot.SendAudioWithContext.
 type SendAudioOpts struct {
 	// Unique identifier of the business connection on behalf of which the message will be sent
@@ -4566,6 +4648,83 @@ func (bot *Bot) SendAudioWithContext(ctx context.Context, chatId int64, audio In
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendAudio (https://core.telegram.org/bots/api#sendaudio)
+//
+// Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
+// For sending voice messages, use the sendVoice method instead.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - audio (type InputFileOrString): Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendAudioOpts): All optional parameters.
+func (bot *Bot) NewSendAudio(chatId int64, audio InputFileOrString, opts *SendAudioOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if audio != nil {
+		err := audio.Attach("audio", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'audio' input file: %w", err)
+		}
+		v["audio"] = audio.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		if opts.Duration != 0 {
+			v["duration"] = strconv.FormatInt(opts.Duration, 10)
+		}
+		v["performer"] = opts.Performer
+		v["title"] = opts.Title
+		if opts.Thumbnail != nil {
+			err := opts.Thumbnail.Attach("thumbnail", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'thumbnail' input file: %w", err)
+			}
+			v["thumbnail"] = opts.Thumbnail.getValue()
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendAudio", v: &v, data: &data}, nil
 }
 
 // SendChatActionOpts is the set of optional fields for Bot.SendChatAction and Bot.SendChatActionWithContext.
@@ -4995,6 +5154,78 @@ func (bot *Bot) SendDocumentWithContext(ctx context.Context, chatId int64, docum
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendDocument (https://core.telegram.org/bots/api#senddocument)
+//
+// Use this method to send general files. On success, the sent Message is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - document (type InputFileOrString): File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendDocumentOpts): All optional parameters.
+func (bot *Bot) NewSendDocument(chatId int64, document InputFileOrString, opts *SendDocumentOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if document != nil {
+		err := document.Attach("document", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'document' input file: %w", err)
+		}
+		v["document"] = document.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		if opts.Thumbnail != nil {
+			err := opts.Thumbnail.Attach("thumbnail", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'thumbnail' input file: %w", err)
+			}
+			v["thumbnail"] = opts.Thumbnail.getValue()
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		v["disable_content_type_detection"] = strconv.FormatBool(opts.DisableContentTypeDetection)
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendDocument", v: &v, data: &data}, nil
 }
 
 // SendGameOpts is the set of optional fields for Bot.SendGame and Bot.SendGameWithContext.
@@ -5495,6 +5726,55 @@ func (bot *Bot) SendMediaGroupWithContext(ctx context.Context, chatId int64, med
 	return m, json.Unmarshal(r, &m)
 }
 
+// SendMediaGroup (https://core.telegram.org/bots/api#sendmediagroup)
+//
+// Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - media (type []InputMedia): A JSON-serialized array describing messages to be sent, must include 2-10 items
+//   - opts (type SendMediaGroupOpts): All optional parameters.
+func (bot *Bot) NewSendMediaGroup(chatId int64, media []InputMedia, opts *SendMediaGroupOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if media != nil {
+		var rawList []json.RawMessage
+		for idx, im := range media {
+			inputBs, err := im.InputParams("media"+strconv.Itoa(idx), data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal list item %d for field media: %w", idx, err)
+			}
+			rawList = append(rawList, inputBs)
+		}
+		bs, err := json.Marshal(rawList)
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal raw json list for field: media %w", err)
+		}
+		v["media"] = string(bs)
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendMediaGroup", v: &v, data: &data}, nil
+}
+
 // SendMessageOpts is the set of optional fields for Bot.SendMessage and Bot.SendMessageWithContext.
 type SendMessageOpts struct {
 	// Unique identifier of the business connection on behalf of which the message will be sent
@@ -5604,6 +5884,69 @@ func (bot *Bot) SendMessageWithContext(ctx context.Context, chatId int64, text s
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendMessage (https://core.telegram.org/bots/api#sendmessage)
+//
+// Use this method to send text messages. On success, the sent Message is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - text (type string): Text of the message to be sent, 1-4096 characters after entities parsing
+//   - opts (type SendMessageOpts): All optional parameters.
+func (bot *Bot) NewSendMessage(chatId int64, text string, opts *SendMessageOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	v["text"] = text
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["parse_mode"] = opts.ParseMode
+		if opts.Entities != nil {
+			bs, err := json.Marshal(opts.Entities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field entities: %w", err)
+			}
+			v["entities"] = string(bs)
+		}
+		if opts.LinkPreviewOptions != nil {
+			bs, err := json.Marshal(opts.LinkPreviewOptions)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field link_preview_options: %w", err)
+			}
+			v["link_preview_options"] = string(bs)
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendMessage", v: &v}, nil
 }
 
 // SendPaidMediaOpts is the set of optional fields for Bot.SendPaidMedia and Bot.SendPaidMediaWithContext.
@@ -5849,6 +6192,72 @@ func (bot *Bot) SendPhotoWithContext(ctx context.Context, chatId int64, photo In
 	return &m, json.Unmarshal(r, &m)
 }
 
+// SendPhoto (https://core.telegram.org/bots/api#sendphoto)
+//
+// Use this method to send photos. On success, the sent Message is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - photo (type InputFileOrString): Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendPhotoOpts): All optional parameters.
+func (bot *Bot) NewSendPhoto(chatId int64, photo InputFileOrString, opts *SendPhotoOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if photo != nil {
+		err := photo.Attach("photo", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'photo' input file: %w", err)
+		}
+		v["photo"] = photo.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		v["show_caption_above_media"] = strconv.FormatBool(opts.ShowCaptionAboveMedia)
+		v["has_spoiler"] = strconv.FormatBool(opts.HasSpoiler)
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendPhoto", v: &v, data: &data}, nil
+}
+
 // SendPollOpts is the set of optional fields for Bot.SendPoll and Bot.SendPollWithContext.
 type SendPollOpts struct {
 	// Unique identifier of the business connection on behalf of which the message will be sent
@@ -6086,6 +6495,62 @@ func (bot *Bot) SendStickerWithContext(ctx context.Context, chatId int64, sticke
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendSticker (https://core.telegram.org/bots/api#sendsticker)
+//
+// Use this method to send static .WEBP, animated .TGS, or video .WEBM stickers. On success, the sent Message is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - sticker (type InputFileOrString): Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files. Video and animated stickers can't be sent via an HTTP URL.
+//   - opts (type SendStickerOpts): All optional parameters.
+func (bot *Bot) NewSendSticker(chatId int64, sticker InputFileOrString, opts *SendStickerOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if sticker != nil {
+		err := sticker.Attach("sticker", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'sticker' input file: %w", err)
+		}
+		v["sticker"] = sticker.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["emoji"] = opts.Emoji
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendSticker", v: &v, data: &data}, nil
 }
 
 // SendVenueOpts is the set of optional fields for Bot.SendVenue and Bot.SendVenueWithContext.
@@ -6355,6 +6820,99 @@ func (bot *Bot) SendVideoWithContext(ctx context.Context, chatId int64, video In
 	return &m, json.Unmarshal(r, &m)
 }
 
+// SendVideo (https://core.telegram.org/bots/api#sendvideo)
+//
+// Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as Document). On success, the sent Message is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - video (type InputFileOrString): Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendVideoOpts): All optional parameters.
+func (bot *Bot) NewSendVideo(chatId int64, video InputFileOrString, opts *SendVideoOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if video != nil {
+		err := video.Attach("video", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'video' input file: %w", err)
+		}
+		v["video"] = video.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		if opts.Duration != 0 {
+			v["duration"] = strconv.FormatInt(opts.Duration, 10)
+		}
+		if opts.Width != 0 {
+			v["width"] = strconv.FormatInt(opts.Width, 10)
+		}
+		if opts.Height != 0 {
+			v["height"] = strconv.FormatInt(opts.Height, 10)
+		}
+		if opts.Thumbnail != nil {
+			err := opts.Thumbnail.Attach("thumbnail", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'thumbnail' input file: %w", err)
+			}
+			v["thumbnail"] = opts.Thumbnail.getValue()
+		}
+		if opts.Cover != nil {
+			err := opts.Cover.Attach("cover", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'cover' input file: %w", err)
+			}
+			v["cover"] = opts.Cover.getValue()
+		}
+		if opts.StartTimestamp != 0 {
+			v["start_timestamp"] = strconv.FormatInt(opts.StartTimestamp, 10)
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		v["show_caption_above_media"] = strconv.FormatBool(opts.ShowCaptionAboveMedia)
+		v["has_spoiler"] = strconv.FormatBool(opts.HasSpoiler)
+		v["supports_streaming"] = strconv.FormatBool(opts.SupportsStreaming)
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendVideo", v: &v, data: &data}, nil
+}
+
 // SendVideoNoteOpts is the set of optional fields for Bot.SendVideoNote and Bot.SendVideoNoteWithContext.
 type SendVideoNoteOpts struct {
 	// Unique identifier of the business connection on behalf of which the message will be sent
@@ -6469,6 +7027,74 @@ func (bot *Bot) SendVideoNoteWithContext(ctx context.Context, chatId int64, vide
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendVideoNote (https://core.telegram.org/bots/api#sendvideonote)
+//
+// As of v.4.0, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - videoNote (type InputFileOrString): Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files. Sending video notes by a URL is currently unsupported
+//   - opts (type SendVideoNoteOpts): All optional parameters.
+func (bot *Bot) NewSendVideoNote(chatId int64, videoNote InputFileOrString, opts *SendVideoNoteOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if videoNote != nil {
+		err := videoNote.Attach("video_note", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'video_note' input file: %w", err)
+		}
+		v["video_note"] = videoNote.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		if opts.Duration != 0 {
+			v["duration"] = strconv.FormatInt(opts.Duration, 10)
+		}
+		if opts.Length != 0 {
+			v["length"] = strconv.FormatInt(opts.Length, 10)
+		}
+		if opts.Thumbnail != nil {
+			err := opts.Thumbnail.Attach("thumbnail", data)
+			if err != nil {
+				return nil, fmt.Errorf("failed to attach 'thumbnail' input file: %w", err)
+			}
+			v["thumbnail"] = opts.Thumbnail.getValue()
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendVideoNote", v: &v, data: &data}, nil
 }
 
 // SendVoiceOpts is the set of optional fields for Bot.SendVoice and Bot.SendVoiceWithContext.
@@ -6586,6 +7212,73 @@ func (bot *Bot) SendVoiceWithContext(ctx context.Context, chatId int64, voice In
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// SendVoice (https://core.telegram.org/bots/api#sendvoice)
+//
+// Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as Audio or Document). On success, the sent Message is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - voice (type InputFileOrString): Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files: https://core.telegram.org/bots/api#sending-files
+//   - opts (type SendVoiceOpts): All optional parameters.
+func (bot *Bot) NewSendVoice(chatId int64, voice InputFileOrString, opts *SendVoiceOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	data := map[string]FileReader{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	if voice != nil {
+		err := voice.Attach("voice", data)
+		if err != nil {
+			return nil, fmt.Errorf("failed to attach 'voice' input file: %w", err)
+		}
+		v["voice"] = voice.getValue()
+	}
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		v["caption"] = opts.Caption
+		v["parse_mode"] = opts.ParseMode
+		if opts.CaptionEntities != nil {
+			bs, err := json.Marshal(opts.CaptionEntities)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+			}
+			v["caption_entities"] = string(bs)
+		}
+		if opts.Duration != 0 {
+			v["duration"] = strconv.FormatInt(opts.Duration, 10)
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		v["allow_paid_broadcast"] = strconv.FormatBool(opts.AllowPaidBroadcast)
+		v["message_effect_id"] = opts.MessageEffectId
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+		if opts.ReplyParameters != nil {
+			bs, err := json.Marshal(opts.ReplyParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_parameters: %w", err)
+			}
+			v["reply_parameters"] = string(bs)
+		}
+		if opts.ReplyMarkup != nil {
+			bs, err := json.Marshal(opts.ReplyMarkup)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			}
+			v["reply_markup"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{method: "sendVoice", v: &v, data: &data}, nil
 }
 
 // SetBusinessAccountBioOpts is the set of optional fields for Bot.SetBusinessAccountBio and Bot.SetBusinessAccountBioWithContext.
