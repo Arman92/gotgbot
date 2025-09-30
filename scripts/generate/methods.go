@@ -121,7 +121,9 @@ func generateMethodDef(d APIDescription, tgMethod MethodDescription) (string, er
 	method.WriteString(returnGen)
 	method.WriteString("\n}")
 
-	specialMethods := []string{"sendMessage", "sendPhoto", "sendAudio", "sendDocument", "sendVideo", "sendVoice", "sendVideoNote", "sendSticker", "sendMediaGroup", "sendAnimation"}
+	specialMethods := []string{"sendMessage", "sendPhoto", "sendAudio", "sendDocument",
+		"sendVideo", "sendVoice", "sendVideoNote", "sendSticker",
+		"sendMediaGroup", "sendAnimation", "editMessageText", "forwardMessage", "deleteMessage"}
 
 	if contains(tgMethod.Name, specialMethods) {
 		method.WriteString(desc)

@@ -1365,6 +1365,31 @@ func (bot *Bot) DeleteMessageWithContext(ctx context.Context, chatId int64, mess
 	return b, json.Unmarshal(r, &b)
 }
 
+// DeleteMessage (https://core.telegram.org/bots/api#deletemessage)
+//
+// Use this method to delete a message, including service messages, with the following limitations:
+//   - A message can only be deleted if it was sent less than 48 hours ago.
+//   - Service messages about a supergroup, channel, or forum topic creation can't be deleted.
+//   - A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.
+//   - Bots can delete outgoing messages in private chats, groups, and supergroups.
+//   - Bots can delete incoming messages in private chats.
+//   - Bots granted can_post_messages permissions can delete outgoing messages in channels.
+//   - If the bot is an administrator of a group, it can delete any message there.
+//   - If the bot has can_delete_messages administrator right in a supergroup or a channel, it can delete any message there.
+//   - If the bot has can_manage_direct_messages administrator right in a channel, it can delete any message in the corresponding direct messages chat.
+//
+// Returns True on success.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - messageId (type int64): Identifier of the message to delete
+//   - opts (type DeleteMessageOpts): All optional parameters.
+func NewDeleteMessage(chatId int64, messageId int64, opts *DeleteMessageOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	v["message_id"] = strconv.FormatInt(messageId, 10)
+
+	return &RequestMessage{Method: "deleteMessage", Values: &v}, nil
+}
+
 // DeleteMessagesOpts is the set of optional fields for Bot.DeleteMessages and Bot.DeleteMessagesWithContext.
 type DeleteMessagesOpts struct {
 	// RequestOpts are an additional optional field to configure timeouts for individual requests
@@ -2226,6 +2251,48 @@ func (bot *Bot) EditMessageTextWithContext(ctx context.Context, text string, opt
 
 }
 
+// EditMessageText (https://core.telegram.org/bots/api#editmessagetext)
+//
+// Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.
+//   - text (type string): New text of the message, 1-4096 characters after entities parsing
+//   - opts (type EditMessageTextOpts): All optional parameters.
+func NewEditMessageText(text string, opts *EditMessageTextOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	v["text"] = text
+	if opts != nil {
+		v["business_connection_id"] = opts.BusinessConnectionId
+		if opts.ChatId != 0 {
+			v["chat_id"] = strconv.FormatInt(opts.ChatId, 10)
+		}
+		if opts.MessageId != 0 {
+			v["message_id"] = strconv.FormatInt(opts.MessageId, 10)
+		}
+		v["inline_message_id"] = opts.InlineMessageId
+		v["parse_mode"] = opts.ParseMode
+		if opts.Entities != nil {
+			bs, err := json.Marshal(opts.Entities)
+			if err != nil {
+				return nil, false, fmt.Errorf("failed to marshal field entities: %w", err)
+			}
+			v["entities"] = string(bs)
+		}
+		if opts.LinkPreviewOptions != nil {
+			bs, err := json.Marshal(opts.LinkPreviewOptions)
+			if err != nil {
+				return nil, false, fmt.Errorf("failed to marshal field link_preview_options: %w", err)
+			}
+			v["link_preview_options"] = string(bs)
+		}
+		bs, err := json.Marshal(opts.ReplyMarkup)
+		if err != nil {
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+		}
+		v["reply_markup"] = string(bs)
+	}
+
+	return &RequestMessage{Method: "editMessageText", Values: &v}, nil
+}
+
 // EditStoryOpts is the set of optional fields for Bot.EditStory and Bot.EditStoryWithContext.
 type EditStoryOpts struct {
 	// Caption of the story, 0-2048 characters after entities parsing
@@ -2434,6 +2501,42 @@ func (bot *Bot) ForwardMessageWithContext(ctx context.Context, chatId int64, fro
 
 	var m Message
 	return &m, json.Unmarshal(r, &m)
+}
+
+// ForwardMessage (https://core.telegram.org/bots/api#forwardmessage)
+//
+// Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent Message is returned.
+//   - chatId (type int64): Unique identifier for the target chat
+//   - fromChatId (type int64): Unique identifier for the chat where the original message was sent
+//   - messageId (type int64): Message identifier in the chat specified in from_chat_id
+//   - opts (type ForwardMessageOpts): All optional parameters.
+func NewForwardMessage(chatId int64, fromChatId int64, messageId int64, opts *ForwardMessageOpts) (*RequestMessage, error) {
+	v := map[string]string{}
+	v["chat_id"] = strconv.FormatInt(chatId, 10)
+	v["from_chat_id"] = strconv.FormatInt(fromChatId, 10)
+	v["message_id"] = strconv.FormatInt(messageId, 10)
+	if opts != nil {
+		if opts.MessageThreadId != 0 {
+			v["message_thread_id"] = strconv.FormatInt(opts.MessageThreadId, 10)
+		}
+		if opts.DirectMessagesTopicId != 0 {
+			v["direct_messages_topic_id"] = strconv.FormatInt(opts.DirectMessagesTopicId, 10)
+		}
+		if opts.VideoStartTimestamp != 0 {
+			v["video_start_timestamp"] = strconv.FormatInt(opts.VideoStartTimestamp, 10)
+		}
+		v["disable_notification"] = strconv.FormatBool(opts.DisableNotification)
+		v["protect_content"] = strconv.FormatBool(opts.ProtectContent)
+		if opts.SuggestedPostParameters != nil {
+			bs, err := json.Marshal(opts.SuggestedPostParameters)
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal field suggested_post_parameters: %w", err)
+			}
+			v["suggested_post_parameters"] = string(bs)
+		}
+	}
+
+	return &RequestMessage{Method: "forwardMessage", Values: &v}, nil
 }
 
 // ForwardMessagesOpts is the set of optional fields for Bot.ForwardMessages and Bot.ForwardMessagesWithContext.
